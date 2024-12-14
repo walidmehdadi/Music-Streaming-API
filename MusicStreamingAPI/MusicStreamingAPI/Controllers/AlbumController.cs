@@ -27,5 +27,22 @@ namespace MusicStreamingAPI.Controllers
             // Return album details
             return Ok(album);
         }
+
+        [HttpPost]
+        public ActionResult AddAlbum(Album album)
+        {
+            if (!MusicData.Artists.Any(a => a.Id == album.ArtistId))
+            {
+                return BadRequest("The specified ArtistId does not exist.");
+            }
+
+            if (MusicData.Albums.Any(a => a.Id == album.Id))
+            {
+                return BadRequest("Album with this ID already exists.");
+            }
+
+            MusicData.Albums.Add(album);
+            return CreatedAtAction(nameof(GetAlbum), new { id = album.Id }, album);
+        }
     }
 }

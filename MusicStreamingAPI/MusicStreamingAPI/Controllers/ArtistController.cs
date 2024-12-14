@@ -27,5 +27,17 @@ namespace MusicStreamingAPI.Controllers
             // Return artist details
             return Ok(artist);
         }
+
+        [HttpPost]
+        public ActionResult AddArtist (Artist artist)
+        {
+            if (MusicData.Artists.Any(a => a.Id == artist.Id))
+            {
+                return BadRequest("Artist with this ID already exists.");
+            }
+
+            MusicData.Artists.Add(artist);
+            return CreatedAtAction(nameof(GetArtist), new { id = artist.Id }, artist);
+        }
     }
 }
