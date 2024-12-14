@@ -11,18 +11,20 @@ namespace MusicStreamingAPI.Controllers
         [HttpGet]
         public ActionResult<IEnumerable<Song>> GetSongs()
         {
-            var songs = MusicData.Artists.SelectMany(a => a.Albums).SelectMany(al => al.Songs).ToList();
-            return Ok(songs);  // Return all songs
+            return Ok(MusicData.Songs);  // Return all songs
         }
 
         [HttpGet("{id}")]
         public ActionResult<Song> GetSong(int id)
         {
-            var song = MusicData.Artists.SelectMany(a => a.Albums).SelectMany(al => al.Songs).FirstOrDefault(s => s.Id == id);
+            // Find the song by its ID
+            var song = MusicData.Songs.FirstOrDefault(s => s.Id == id);
             if (song == null)
             {
                 return NotFound();
             }
+
+            // Return song details
             return Ok(song);
         }
     }
