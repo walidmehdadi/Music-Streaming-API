@@ -44,5 +44,43 @@ namespace MusicStreamingAPI.Controllers
             MusicData.Albums.Add(album);
             return CreatedAtAction(nameof(GetAlbum), new { id = album.Id }, album);
         }
+
+        [HttpPut("{id}")]
+        public ActionResult<Artist> UpdateAlbum(int id, Album updatedAlbum)
+        {
+            if (id != updatedAlbum.Id)
+            {
+                return BadRequest("The provided ids don't match.");
+            }
+
+            var album = MusicData.Albums.FirstOrDefault(x => x.Id == id);
+
+            if (album == null)
+            {
+                return NotFound("The album doesn't exist.");
+            }
+
+            if (album != null)
+            {
+                album.Title = updatedAlbum.Title;
+            }
+
+            return Ok(album);
+        }
+
+        [HttpDelete("{id}")]
+        public ActionResult DeleteAlbum(int id)
+        {
+            var album = MusicData.Albums.FirstOrDefault(s => s.Id == id);
+
+            if (album == null)
+            {
+                return NotFound();
+            }
+
+            MusicData.Albums.Remove(album);
+
+            return NoContent();
+        }
     }
 }

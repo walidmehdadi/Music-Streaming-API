@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MusicStreamingAPI.Models;
+using System;
 
 namespace MusicStreamingAPI.Controllers
 {
@@ -29,7 +30,7 @@ namespace MusicStreamingAPI.Controllers
         }
 
         [HttpPost]
-        public ActionResult AddArtist (Artist artist)
+        public ActionResult AddArtist(Artist artist)
         {
             if (MusicData.Artists.Any(a => a.Id == artist.Id))
             {
@@ -38,6 +39,44 @@ namespace MusicStreamingAPI.Controllers
 
             MusicData.Artists.Add(artist);
             return CreatedAtAction(nameof(GetArtist), new { id = artist.Id }, artist);
+        }
+
+        [HttpPut("{id}")]
+        public ActionResult<Artist> UpdateArtist(int id, Artist updatedArtist)
+        {
+            if (id != updatedArtist.Id)
+            {
+                return BadRequest("The provided ids don't match.");
+            }
+
+            var artist = MusicData.Artists.FirstOrDefault(x => x.Id == id);
+
+            if (artist == null)
+            {
+                return NotFound("The artist doesn't exist.");
+            }
+
+            if (artist != null)
+            {
+                artist.Name = updatedArtist.Name;
+            }
+
+            return Ok(artist);
+        }
+
+        [HttpDelete("{id}")]
+        public ActionResult DeleteArtist(int id)
+        {
+            var artist = MusicData.Artists.FirstOrDefault(s => s.Id == id);
+
+            if (artist == null)
+            {
+                return NotFound();
+            }
+
+            MusicData.Artists.Remove(artist);
+
+            return NoContent();
         }
     }
 }
